@@ -1,4 +1,24 @@
+#include <stdio.h>
+#include <string.h>
 
+#define MAX 5   // numero fixo de territorios
+#define TAM 30   // tamanho maximo para as strings do nome e da cor do exercito
+
+// definiçao de estrutura "territorio"
+
+typedef struct {
+    char nome[TAM];   // nome do territorio
+    
+    char corExercito[TAM]; // cor do exercito
+
+    int tropas;    // numero de tropas no territorio
+} Territorio;
+
+
+int main(){
+    Territorio mapa[MAX]; //vetor estatico de 5 territorios
+    
+}
 
 
 
