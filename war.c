@@ -1,26 +1,89 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX 5   // numero fixo de territorios
-#define TAM 30   // tamanho maximo para as strings do nome e da cor do exercito
+#define MAX 5   // número fixo de territórios
+#define TAM 30  // tamanho máximo para as strings (nome e cor do exército)
 
-// definiçao de estrutura "territorio"
-
+// Definição da estrutura "Territorio"
 typedef struct {
-    char nome[TAM];   // nome do territorio
-    
-    char corExercito[TAM]; // cor do exercito
-
-    int tropas;    // numero de tropas no territorio
+    char nome[TAM];        // Nome do território
+    char corExercito[TAM]; // Cor do exército que domina
+    int tropas;            // Número de tropas no território
 } Territorio;
 
+int main() {
+    Territorio mapa[MAX]; // Vetor estático de 5 territórios
 
-int main(){
-    Territorio mapa[MAX]; //vetor estatico de 5 territorios
-    
+    // Mensagem inicial do jogo
+    printf("=====================================\n");
+    printf("      Bem-vindos ao Jogo de Guerra \n");
+    printf("=====================================\n\n");
+
+    printf("Vamos cadastrar os territórios!\n");
+
+    // Loop para cadastrar os 5 territórios
+    for (int i = 0; i < MAX; i++) {
+        printf("\n>>> Cadastro do Território %d <<<\n", i + 1);
+
+        // Lê o nome do território
+        printf("Nome: ");
+        fgets(mapa[i].nome, TAM, stdin);
+        mapa[i].nome[strcspn(mapa[i].nome, "\n")] = 0; // remove o "\n" do final
+
+        // Lê a cor do exército
+        printf("Cor do Exército: ");
+        fgets(mapa[i].corExercito, TAM, stdin);
+        mapa[i].corExercito[strcspn(mapa[i].corExercito, "\n")] = 0;
+
+        // Lê o número de tropas
+        printf("Número de Tropas: ");
+        scanf("%d", &mapa[i].tropas);
+        getchar(); // consome o "\n" que sobra do scanf
+    }
+
+    // Exibição final formatada do estado atual do mapa
+    printf("\n=====================================\n");
+    printf("         ESTADO ATUAL DO MAPA \n");
+    printf("=====================================\n\n");
+
+    // Loop para mostrar cada território cadastrado
+    for (int i = 0; i < MAX; i++) {
+        printf("TERRITÓRIO %d\n", i + 1);
+        printf("- Nome: %s\n", mapa[i].nome);
+        printf("- Dominado por: Exército %s\n", mapa[i].corExercito);
+        printf("- Tropas: %d\n", mapa[i].tropas);
+        printf("-------------------------------------\n");
+    }
+
+    return 0; // fim do programa
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 
