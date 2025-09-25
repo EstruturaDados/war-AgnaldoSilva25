@@ -103,9 +103,33 @@ int main() {
     do {
         exibirMapa(mapa, MAX);
 
-        printf("\n=== FASE DE ATAQUE")
+        printf("\n=== FASE DE ATAQUE\n");
+        printf("Digite o numero do territorio atacante (1-%d, 0 para sair):", MAX);
+        scanf("%d,&opcao");
+
+        if (opcao == 0) break; // said do jogo
+
+        int atacante = opcao - 1;
+
+        printf("Digite o numero do territorio defensor (1-%d):", MAX);
+        scanf("%d", &opcao);
+        int defensor = opcao - 1;
+
+        if (atacante == defensor || atacante < 0 || atacante >= MAX || defensor <0 || defensor >= MAX){
+            printf(" escolha invalida! Tente novamente.\n");
+            continue;
     }
 
+    atacar(&mapa[atacante], &mapa[defensor]);
+
+} while (1);
+
+    //libera memoria
+    free(mapa);
+
+    printf("\nJogo encerrado.Obrigado por jogar!\n");
+    return 0;
+}
 
 
 
@@ -113,22 +137,6 @@ int main() {
 
 
 
-
-    // Exibição final formatada do estado atual do mapa
-    printf("\n=====================================\n");
-    printf("         ESTADO ATUAL DO MAPA \n");
-    printf("=====================================\n\n");
-
-    // Loop para mostrar cada território cadastrado
-    for (int i = 0; i < MAX; i++) {
-        printf("TERRITÓRIO %d\n", i + 1);
-        printf("- Nome: %s\n", mapa[i].nome);
-        printf("- Dominado por: Exército %s\n", mapa[i].corExercito);
-        printf("- Tropas: %d\n", mapa[i].tropas);
-        printf("-------------------------------------\n");
-    }
-
-    return 0; // fim do programa
 
 
 
@@ -165,7 +173,7 @@ int main() {
 
 // --- Função Principal (main) ---
 // Função principal que orquestra o fluxo do jogo, chamando as outras funções em ordem.
-int main() {
+
     // 1. Configuração Inicial (Setup):
     // - Define o locale para português.
     // - Inicializa a semente para geração de números aleatórios com base no tempo atual.
@@ -185,8 +193,8 @@ int main() {
     // 3. Limpeza:
     // - Ao final do jogo, libera a memória alocada para o mapa para evitar vazamentos de memória.
 
-    return 0;
-}
+
+
 
 // --- Implementação das Funções ---
 
