@@ -41,24 +41,42 @@ void exibirMapa(Territorio *mapa, int qtd) {
     printf("Atacante (%s - %s): %d\n", atacante->nome, atacante->corExercito, dadoAtacante);
     printf("Defensor (%s - %s): %d\n", defensor->nome, defensor->corExercito, dadoDefensor);
 
-    if (dadoAtacante >= dadoDefensor)
+    if (dadoAtacante >= dadoDefensor) {
+        // atacante vence
+        defensor->tropas--;
+        printf(" o atacante venceu! O defensor perdeu 1 tropa.\n");
 
-
-
+        if (defensor->tropas <=0) {
+            printf("O territorio %s foi conquistado pelo exercito %s!\n",
+                defensor->nome, atacante->corExercito);
+            
+            strcpy(defensor->corExercito, atacante->corExercito); // mudade de dono
+            defensor->tropas = 1; //inicia com 1 tropa
+        }
+    } else {
+    // defensor vence
+        atacante->tropas--;
+        printf("O defensor resistiu! O atacante perdeu 1 tropa.!\n");
+    }
  }
 
 
-
-
 int main() {
-    Territorio mapa[MAX]; // Vetor estático de 5 territórios
+    srand(time(NULL)); //inicializa numeros aleatorios
+
+    //alocaçao dinamica para os territorios
+    Territorio *mapa = (Territorio*) calloc(MAX, sizeof(Territorio));
+    if (mapa == NULL){
+        printf("Erro ao alocar memoria!\n");
+        return 1;
+    }
 
     // Mensagem inicial do jogo
     printf("=====================================\n");
     printf("      Bem-vindos ao Jogo de Guerra \n");
     printf("=====================================\n\n");
 
-    printf("Vamos cadastrar os territórios!\n");
+    
 
     // Loop para cadastrar os 5 territórios
     for (int i = 0; i < MAX; i++) {
@@ -79,6 +97,22 @@ int main() {
         scanf("%d", &mapa[i].tropas);
         getchar(); // consome o "\n" que sobra do scanf
     }
+
+    //loop de batalhas
+    int opcao;
+    do {
+        exibirMapa(mapa, MAX);
+
+        printf("\n=== FASE DE ATAQUE")
+    }
+
+
+
+
+
+
+
+
 
     // Exibição final formatada do estado atual do mapa
     printf("\n=====================================\n");
