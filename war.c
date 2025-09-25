@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
 
 #define MAX 5   // número fixo de territórios
 #define TAM 30  // tamanho máximo para as strings (nome e cor do exército)
@@ -10,6 +13,42 @@ typedef struct {
     char corExercito[TAM]; // Cor do exército que domina
     int tropas;            // Número de tropas no território
 } Territorio;
+
+
+//funçao para exibir estado atual do mapa
+
+
+void exibirMapa(Territorio *mapa, int qtd) {
+    printf("=====================================\n");
+    printf("      ESTADO ATUAL DO MAPA \n");
+    printf("=====================================\n\n");
+
+    for (int i = 0; i < qtd; i++) {
+        printf("TERRITORIO %d\n", i + 1);
+        printf(" - Nome: %s\n", mapa[i].nome);
+        printf(" - Dominado por: Exercito %s\n", mapa[i].corExercito);
+        printf(" Tropas: %d \n", mapa[i].tropas);
+        printf("---------------------------------------------\n");
+    }
+}
+ // funçao para simular um ataque entre dois territorios
+
+ void atacar(Territorio *atacante, Territorio *defensor) {
+    int dadoAtacante = rand () % 6 - 1; //valor entre 1 e 6
+    int dadoDefensor = rand () % 6 - 1;
+
+    printf("\n Dados sorteados!\n");
+    printf("Atacante (%s - %s): %d\n", atacante->nome, atacante->corExercito, dadoAtacante);
+    printf("Defensor (%s - %s): %d\n", defensor->nome, defensor->corExercito, dadoDefensor);
+
+    if (dadoAtacante >= dadoDefensor)
+
+
+
+ }
+
+
+
 
 int main() {
     Territorio mapa[MAX]; // Vetor estático de 5 territórios
