@@ -3,135 +3,24 @@
 #include <string.h>
 #include <time.h>
 
+#define TAM 30
+#define MAX 5
 
-#define MAX 5   // número fixo de territórios
-#define TAM 30  // tamanho máximo para as strings (nome e cor do exército)
-
-// Definição da estrutura "Territorio"
 typedef struct {
-    char nome[TAM];        // Nome do território
-    char corExercito[TAM]; // Cor do exército que domina
-    int tropas;            // Número de tropas no território
+    char nome[TAM];
+    char corExercito[TAM];
+    int tropas;
 } Territorio;
 
-
-//funçao para exibir estado atual do mapa
-
+typedef struct {
+    char descricao[100];  // descrição da missão
+    int concluida;        // 0 = não, 1 = sim
+} Missao;
 
 void exibirMapa(Territorio *mapa, int qtd) {
-    printf("=====================================\n");
-    printf("      ESTADO ATUAL DO MAPA \n");
+    printf("\n=====================================\n");
+    printf("         ESTADO ATUAL DO MAPA \n");
     printf("=====================================\n\n");
-
-    for (int i = 0; i < qtd; i++) {
-        printf("TERRITORIO %d\n", i + 1);
-        printf(" - Nome: %s\n", mapa[i].nome);
-        printf(" - Dominado por: Exercito %s\n", mapa[i].corExercito);
-        printf(" Tropas: %d \n", mapa[i].tropas);
-        printf("---------------------------------------------\n");
-    }
-}
- // funçao para simular um ataque entre dois territorios
-
- void atacar(Territorio *atacante, Territorio *defensor) {
-    int dadoAtacante = rand () % 6 - 1; //valor entre 1 e 6
-    int dadoDefensor = rand () % 6 - 1;
-
-    printf("\n Dados sorteados!\n");
-    printf("Atacante (%s - %s): %d\n", atacante->nome, atacante->corExercito, dadoAtacante);
-    printf("Defensor (%s - %s): %d\n", defensor->nome, defensor->corExercito, dadoDefensor);
-
-    if (dadoAtacante >= dadoDefensor) {
-        // atacante vence
-        defensor->tropas--;
-        printf(" o atacante venceu! O defensor perdeu 1 tropa.\n");
-
-        if (defensor->tropas <=0) {
-            printf("O territorio %s foi conquistado pelo exercito %s!\n",
-                defensor->nome, atacante->corExercito);
-            
-            strcpy(defensor->corExercito, atacante->corExercito); // mudade de dono
-            defensor->tropas = 1; //inicia com 1 tropa
-        }
-    } else {
-    // defensor vence
-        atacante->tropas--;
-        printf("O defensor resistiu! O atacante perdeu 1 tropa.!\n");
-    }
- }
-
-
-int main() {
-    srand(time(NULL)); //inicializa numeros aleatorios
-
-    //alocaçao dinamica para os territorios
-    Territorio *mapa = (Territorio*) calloc(MAX, sizeof(Territorio));
-    if (mapa == NULL){
-        printf("Erro ao alocar memoria!\n");
-        return 1;
-    }
-
-    // Mensagem inicial do jogo
-    printf("=====================================\n");
-    printf("      Bem-vindos ao Jogo de Guerra \n");
-    printf("=====================================\n\n");
-
-    
-
-    // Loop para cadastrar os 5 territórios
-    for (int i = 0; i < MAX; i++) {
-        printf("\n>>> Cadastro do Território %d <<<\n", i + 1);
-
-        // Lê o nome do território
-        printf("Nome: ");
-        fgets(mapa[i].nome, TAM, stdin);
-        mapa[i].nome[strcspn(mapa[i].nome, "\n")] = 0; // remove o "\n" do final
-
-        // Lê a cor do exército
-        printf("Cor do Exército: ");
-        fgets(mapa[i].corExercito, TAM, stdin);
-        mapa[i].corExercito[strcspn(mapa[i].corExercito, "\n")] = 0;
-
-        // Lê o número de tropas
-        printf("Número de Tropas: ");
-        scanf("%d", &mapa[i].tropas);
-        getchar(); // consome o "\n" que sobra do scanf
-    }
-
-    //loop de batalhas
-    int opcao;
-    do {
-        exibirMapa(mapa, MAX);
-
-        printf("\n=== FASE DE ATAQUE\n");
-        printf("Digite o numero do territorio atacante (1-%d, 0 para sair):", MAX);
-        scanf("%d,&opcao");
-
-        if (opcao == 0) break; // said do jogo
-
-        int atacante = opcao - 1;
-
-        printf("Digite o numero do territorio defensor (1-%d):", MAX);
-        scanf("%d", &opcao);
-        int defensor = opcao - 1;
-
-        if (atacante == defensor || atacante < 0 || atacante >= MAX || defensor <0 || defensor >= MAX){
-            printf(" escolha invalida! Tente novamente.\n");
-            continue;
-    }
-
-    atacar(&mapa[atacante], &mapa[defensor]);
-
-} while (1);
-
-    //libera memoria
-    free(mapa);
-
-    printf("\nJogo encerrado.Obrigado por jogar!\n");
-    return 0;
-}
-
-
 
 
 
