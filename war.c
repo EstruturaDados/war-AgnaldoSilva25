@@ -22,6 +22,195 @@ void exibirMapa(Territorio *mapa, int qtd) {
     printf("         ESTADO ATUAL DO MAPA \n");
     printf("=====================================\n\n");
 
+    for (int i = 0; i < qtd; i++) {
+        printf("TERRITÓRIO %d\n", i + 1);
+        printf("- Nome: %s\n", mapa[i].nome);
+        printf("- Dominado por: Exército %s\n", mapa[i].corExercito);
+        printf("- Tropas: %d\n", mapa[i].tropas);
+        printf("-------------------------------------\n");
+    }
+}
+
+void atacar(Territorio *atacante, Territorio *defensor) {
+    if (atacante->tropas <= 1) {
+        printf(" O território atacante precisa ter mais de 1 tropa para atacar!\n");
+        return;
+    }
+
+    int dadoAtacante = rand() % 6 + 1;
+    int dadoDefensor = rand() % 6 + 1;
+
+    printf("\n Dados sorteados!\n");
+    printf("Atacante (%s - %s): %d\n", atacante->nome, atacante->corExercito, dadoAtacante);
+    printf("Defensor  (%s - %s): %d\n", defensor->nome, defensor->corExercito, dadoDefensor);
+
+    if (dadoAtacante >= dadoDefensor) {
+        defensor->tropas--;
+        printf(" atacante venceu! O defensor perdeu 1 tropa.\n");
+
+        if (defensor->tropas <= 0) {
+            printf(" O território %s foi conquistado pelo exército %s!\n",
+                   defensor->nome, atacante->corExercito);
+            strcpy(defensor->corExercito, atacante->corExercito);
+            defensor->tropas = 1;
+            atacante->tropas--; // envia 1 tropa para ocupar
+        }
+    } else {
+        atacante->tropas--;
+        printf("🛡️ O defensor resistiu! O atacante perdeu 1 tropa.\n");
+    }
+}
+
+void gerarMissoes(Missao *missoes, int qtd) {
+    char lista[3][100] = {
+        "Conquistar 2 territórios inimigos",
+        "Ter pelo menos 10 tropas em um único território",
+        "Dominar todos os territórios de uma mesma cor de exército"
+    };
+
+    for (int i = 0; i < qtd; i++) {
+        strcpy(missoes[i].descricao, lista[i]);
+        missoes[i].concluida = 0;
+    }
+}
+
+void verificarMissoes(Missao *missoes, int qtd, Territorio *mapa, int tam) {
+    for (int i = 0; i < qtd; i++) {
+        if (missoes[i].concluida) continue;
+
+        if (i == 0) {
+            // Missão 1: conquistar 2 territórios (simulação simples: verifica se há 2 da mesma cor)
+            char cor[TAM];
+            int count = 0;
+            strcpy(cor, mapa[0].corExercito);
+            for (int j = 0; j < tam; j++) {
+                if (strcmp(mapa[j].corExercito, cor) == 0) {
+                    count++;
+                }
+            }
+            if (count >= 2) missoes[i].concluida = 1;
+        }
+        else if (i == 1) {
+            // Missão 2: ter 10 tropas em um território
+            for (int j = 0; j < tam; j++) {
+                if (mapa[j].tropas >= 10) {
+                    missoes[i].concluida = 1;
+                    break;
+                }
+            }
+        }
+        else if (i == 2) {
+            // Missão 3: dominar todos os territórios de uma mesma cor
+            int completo = 1;
+            char cor[TAM];
+            strcpy(cor, mapa[0].corExercito);
+            for (int j = 0; j < tam; j++) {
+                if (strcmp(mapa[j].corExercito, cor) != 0) {
+                    completo = 0;
+                    break;
+                }
+            }
+            if (completo) missoes[i].concluida = 1;
+        }
+    }
+}
+
+void mostrarMissoes(Missao *missoes, int qtd) {
+    printf("\n===== MISSÕES =====\n");
+    for (int i = 0; i < qtd; i++) {
+        printf("%d) %s [%s]\n", i + 1, missoes[i].descricao,
+               missoes[i].concluida ? "✔ Concluída" : "❌ Em andamento");
+    }
+    printf("===================\n");
+}
+
+int main() {
+    srand(time(NULL));
+    Territorio *mapa = (Territorio *) calloc(MAX, sizeof(Territorio));
+    if (mapa == NULL) {
+        printf("Erro ao alocar memória!\n");
+        return 1;
+    }
+
+    Missao missoes[3];
+    gerarMissoes(missoes, 3);
+
+    int opcao, cadastrado = 0;
+
+    do {
+        printf("\n==== MENU PRINCIPAL ====\n");
+        printf("1. Cadastrar territórios\n");
+        printf("2. Mostrar mapa\n");
+        printf("3. Atacar território\n");
+        printf("4. Ver missões\n");
+        printf("0. Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &opcao);
+        getchar();
+
+        switch (opcao) {
+            case 1:
+                for (int i = 0; i < MAX; i++) {
+                    printf("\n>>> Cadastro do Território %d <<<\n", i + 1);
+
+                    printf("Nome: ");
+                    fgets(mapa[i].nome, TAM, stdin);
+                    mapa[i].nome[strcspn(mapa[i].nome, "\n")] = 0;
+
+                    printf("Cor do Exército: ");
+                    fgets(mapa[i].corExercito, TAM, stdin);
+                    mapa[i].corExercito[strcspn(mapa[i].corExercito, "\n")] = 0;
+
+                    printf("Número de Tropas: ");
+                    scanf("%d", &mapa[i].tropas);
+                    getchar();
+                }
+                cadastrado = 1;
+                break;
+
+            case 2:
+                if (!cadastrado) printf(" Cadastre os territórios primeiro!\n");
+                else exibirMapa(mapa, MAX);
+                break;
+
+            case 3:
+                if (!cadastrado) {
+                    printf(" Cadastre os territórios primeiro!\n");
+                    break;
+                }
+                int a, d;
+                exibirMapa(mapa, MAX);
+                printf("Digite o número do território atacante: ");
+                scanf("%d", &a);
+                printf("Digite o número do território defensor: ");
+                scanf("%d", &d);
+
+                if (a < 1 || a > MAX || d < 1 || d > MAX || a == d) {
+                    printf("Escolha inválida!\n");
+                    break;
+                }
+
+                atacar(&mapa[a - 1], &mapa[d - 1]);
+                verificarMissoes(missoes, 3, mapa, MAX);
+                break;
+
+            case 4:
+                mostrarMissoes(missoes, 3);
+                break;
+
+            case 0:
+                printf("Jogo encerrado. Até a próxima!\n");
+                break;
+
+            default:
+                printf(" Opção inválida!\n");
+        }
+
+    } while (opcao != 0);
+
+    free(mapa);
+    return 0;
+}
 
 
 
